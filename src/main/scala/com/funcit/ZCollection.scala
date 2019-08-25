@@ -23,7 +23,7 @@ class ZCollection private[funcit] (collection: Task[AsyncCollection]) {
 
   def replace[T](id: String, content: T, cas: Long = 0)(
     implicit ev: Conversions.Encodable[T]): UIO[Fiber[Throwable, MutationResult]] = {
-    collection.flatMap(_.replace(id, content).fromFuture).fork
+    collection.flatMap(_.replace(id, content, cas).fromFuture).fork
   }
 
   def upsert[T](id: String, content: T)(
@@ -32,11 +32,11 @@ class ZCollection private[funcit] (collection: Task[AsyncCollection]) {
   }
 
   def remove(id: String, cas: Long = 0): UIO[Fiber[Throwable, MutationResult]] = {
-    collection.flatMap(_.remove(id).fromFuture).fork
+    collection.flatMap(_.remove(id, cas).fromFuture).fork
   }
 
   def mutateIn(id: String, spec: Seq[MutateInSpec], cas: Long = 0): UIO[Fiber[Throwable, MutateInResult]] = {
-    collection.flatMap(_.mutateIn(id, spec).fromFuture).fork
+    collection.flatMap(_.mutateIn(id, spec, cas).fromFuture).fork
   }
 
   def getAndLock(id: String, lockFor: Duration = 30.seconds): UIO[Fiber[Throwable, GetResult]] = {
