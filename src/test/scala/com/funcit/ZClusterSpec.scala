@@ -1,13 +1,11 @@
 package com.funcit
 
-import com.couchbase.client.scala.api.MutationResult
 import com.couchbase.client.scala.json.JsonObject
-import com.couchbase.client.scala.kv.GetResult
 import com.funcit.ZCluster._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 import zio.DefaultRuntime
 
-class ZClusterSpec extends FlatSpec with Matchers with DefaultRuntime {
+class ZClusterSpec extends FlatSpec with Matchers with DefaultRuntime with BeforeAndAfterAll {
 
   private lazy val connectionString = "localhost"
   private lazy val username = "Administrator"
@@ -26,7 +24,7 @@ class ZClusterSpec extends FlatSpec with Matchers with DefaultRuntime {
       removeValue <- removeFiber.join
     } yield removeValue
 
-    unsafeRun(result).cas should be > 0L
+    unsafeRun(result).get.cas should be > 0L
   }
 
   "exists" should "check if the document exists" in {
@@ -40,8 +38,22 @@ class ZClusterSpec extends FlatSpec with Matchers with DefaultRuntime {
       existsValue <- existsFiber.join
       removeFiber <- coll.remove("doc1")
       _           <- removeFiber.join
-    } yield existsValue.exists
+    } yield existsValue
 
-    unsafeRun(result) should be(true)
+    unsafeRun(result).exists should be(true)
+  }
+
+  "upsert" should "update or insert a document if does / does not exist" in {
+    val result = for {
+      conn        <- connect(connectionString, username, password)
+      bkt         <- conn.bucket("test")
+      coll        <- bkt.defaultCollection
+      docUpsFiber <- coll.upsert("doc2", JsonObject("hello" -> "whole world"))
+      upsertValue <- docUpsFiber.join
+      removeFiber <- coll.remove("doc2")
+      _           <- removeFiber.join
+    } yield upsertValue
+
+    unsafeRun(result).cas > 0L
   }
 }
