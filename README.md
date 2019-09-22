@@ -2,7 +2,7 @@
 
 The library uses ZIO as a dependency since it offers better concurrency using Fiber and much better handling of errors.
 
-##Connecting to a Cluster
+### Connecting to a Cluster
 
 ```
 val connection = connect("localhost", "Administrator", "password")

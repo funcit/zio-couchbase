@@ -2,7 +2,7 @@ import sbt.Keys.libraryDependencies
 import sbt._
 
 object Dependencies {
-  lazy val couchbaseScalaClient = "1.0.0-alpha.6"
+  lazy val couchbaseScalaClient = "1.0.0-alpha.7"
   lazy val upickleVersion = "0.7.1"
   lazy val playJsonVersion = "2.6.7"
   lazy val zioVersion = "1.0.0-RC11-1"

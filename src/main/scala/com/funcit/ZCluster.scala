@@ -35,17 +35,20 @@ class ZCluster private (cluster: Cluster) {
 object ZCluster {
 
   def connect(connectionString: String, username: String, password: String): Task[ZCluster] = {
-    val cluster = Cluster.connect(connectionString, username, password)
-    new ZCluster(cluster).toZIO
+    for{
+      c <- Cluster.connect(connectionString, username, password).fromTry
+    } yield new ZCluster(c)
   }
 
   def connect(connectionString: String, credentials: Credentials): Task[ZCluster] = {
-    val cluster = Cluster.connect(connectionString, credentials)
-    new ZCluster(cluster).toZIO
+    for{
+      c <- Cluster.connect(connectionString, credentials).fromTry
+    } yield new ZCluster(c)
   }
 
   def connect(environment: ClusterEnvironment): Task[ZCluster] = {
-    val cluster = Cluster.connect(environment)
-    new ZCluster(cluster).toZIO
+    for{
+      c <- Cluster.connect(environment).fromTry
+    } yield new ZCluster(c)
   }
 }

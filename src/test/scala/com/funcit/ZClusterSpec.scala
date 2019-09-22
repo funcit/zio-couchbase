@@ -8,8 +8,8 @@ import zio.DefaultRuntime
 class ZClusterSpec extends FlatSpec with Matchers with DefaultRuntime with BeforeAndAfterAll {
 
   private lazy val connectionString = "localhost"
-  private lazy val username = "Administrator"
-  private lazy val password = "password"
+  private lazy val username = "surajatreya"
+  private lazy val password = "Il0veBMWz4"
 
   "insert, get and remove" should "insert, fetch and delete the document" in {
     val result = for {
